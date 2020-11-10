@@ -1,6 +1,11 @@
 <template>
 <v-app-bar app light fixed>
-    <v-toolbar-title>Art&Sky</v-toolbar-title>
+    <v-toolbar-title><router-link to = '/' class="header__link"><v-btn text >
+      Art&Sky
+    </v-btn></router-link></v-toolbar-title>
+    <router-link to = '/docs' class="header__link"><v-btn  rounded>
+      Docs
+    </v-btn></router-link>
     <v-spacer></v-spacer>
     
 
@@ -23,5 +28,7 @@ export default {
 </script>
 
 <style lang="scss">
-
+.header__link{
+    text-decoration: none;
+}
 </style>

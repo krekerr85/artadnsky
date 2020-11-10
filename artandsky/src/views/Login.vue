@@ -1,10 +1,11 @@
 <template>
-        <v-form >
+        <v-form class="login-form" justify-center>
             <v-text-field
             v-model="email"
             :error-messages="emailErrors"
             label="E-mail"
             required
+            class="text-input"
             @input="$v.email.$touch()"
             @blur="$v.email.$touch()"
             ></v-text-field>
@@ -16,10 +17,10 @@
                     name="input-10-1"
                     label="Password"
                     hint="At least 8 characters"
-                    counter
+                    class="text-input"
                     @click:append="show1 = !show1"
                 ></v-text-field>
-            <v-btn light @click="submit">submit</v-btn>
+            <v-btn class="submit-btn" light @click="submit">sign in</v-btn>
         </v-form>
 </template>
 
@@ -107,5 +108,18 @@
 </script>
 
 <style lang="scss">
+.submit-btn{
+    width: 25%;
+}
+.login-form{
+    width: 30vw;
+    margin: 0 auto;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+.text-input{
+    width:100%;
+}
 
 </style>

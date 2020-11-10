@@ -36,8 +36,12 @@ export default {
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 .main-content{
-  width:50vw;
+  width:70vw;
   margin: 5rem auto;
+}
+p{
+  font-family: 'Ubuntu', sans-serif;
 }
 </style>
