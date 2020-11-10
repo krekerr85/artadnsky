@@ -108,17 +108,30 @@
 </script>
 
 <style lang="scss">
-.submit-btn{
-    width: 37%;
-}
+
 .login-form{
-    margin: 18.3vh auto;
+    margin: 15vh auto;
     display:flex;
     flex-direction: column;
     align-items: center;
 }
-.text-input{
-    width:100%;
+
+@media screen and (max-width: 600px) {
+  .text-input{
+    width:80%;
+}
+  .submit-btn{
+    width: 25vw;
+}
+}
+@media screen and (min-width:600px) and (max-width:2000px) {
+  .text-input{
+    width:40%;
+}
+  .submit-btn{
+    width: 15vw;
+}
+  
 }
 
 </style>

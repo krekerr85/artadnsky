@@ -38,7 +38,7 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 .main-content{
-  width:70vw;
+  width:100vw;
   margin: 5rem auto;
   padding: 0;
   flex: 1 1 auto;
