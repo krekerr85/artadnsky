@@ -109,11 +109,10 @@
 
 <style lang="scss">
 .submit-btn{
-    width: 25%;
+    width: 37%;
 }
 .login-form{
-    width: 30vw;
-    margin: 0 auto;
+    margin: 18.3vh auto;
     display:flex;
     flex-direction: column;
     align-items: center;

@@ -5,10 +5,10 @@
 
     <Header/>
       
-    <v-main class="main-content">
+    <div class="main-content">
 
       <router-view/>
-    </v-main>
+    </div>
      
     <Footer/>
 
@@ -40,8 +40,15 @@ export default {
 .main-content{
   width:70vw;
   margin: 5rem auto;
+  padding: 0;
+  flex: 1 1 auto;
 }
 p{
   font-family: 'Ubuntu', sans-serif;
+}
+#inspire{
+  display: flex;
+  flex-direction: column;
+
 }
 </style>
