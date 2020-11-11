@@ -133,21 +133,22 @@
 .submit-btn{
     margin: 1rem;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
+  .login-form{
+    width:90%;
+}
+.text-input{
+    width:100%;
+}
+  
+}
+@media screen and (min-width:800px) and (max-width:2000px) {
+  .login-form{
+    width:40%;
+}
   .text-input{
-    width:80%;
-}
-  .submit-btn{
-    width: 80%;
-}
-}
-@media screen and (min-width:600px) and (max-width:2000px) {
-  .text-input{
-    width:80%;
-}
-  .submit-btn{
-    width: 80%;
-}
+      width: 80%;
+  }
   
 }
 .login-form__title{
