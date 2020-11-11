@@ -25,6 +25,11 @@ const routes = [
 		name: "Docs",
 		component: () => import("../views/Documents.vue"),
 	},
+	{
+		path: "*",
+		name: "PageNotFound",
+		component: () => import("../views/PageNotFound.vue"),
+	},
 ];
 
 const router = new VueRouter({
