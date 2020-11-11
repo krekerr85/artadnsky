@@ -9,13 +9,28 @@
     <v-spacer></v-spacer>
     
 
-    
-    <router-link to = '/' class="header__link"><v-btn icon>
-      <v-icon>mdi-home</v-icon>
-    </v-btn></router-link>
-    <router-link to = '/login' class="header__link"><v-btn icon>
-      <v-icon>mdi-login</v-icon>
-    </v-btn></router-link>
+    <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="primary"
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
+        </template>
+            <v-list>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          :to="item.link"
+           link
+        >
+          {{ item.title }}
+        </v-list-item>
+      </v-list>
+      </v-menu>
 </v-app-bar>
         
 
@@ -23,7 +38,18 @@
 
 <script>
 export default {
-    
+    data(){
+        return {
+            items: [
+      { title: 'Home',
+        link: '/' },
+      { title: 'Sign in',
+        link: '/login' },
+        { title: 'Sign up',
+        link: '/register' },
+    ],
+        }
+    }
 }
 </script>
 

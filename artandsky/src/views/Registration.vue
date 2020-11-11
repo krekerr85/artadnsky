@@ -1,9 +1,9 @@
 <template>
-<div class="background">
+<div>
 
     
     <v-form class="login-form" justify-center>
-            <span class="login-form__title">Log in to your account</span>
+            <span class="login-form__title">Sign up</span>
             <v-text-field
             v-model="email"
             :error-messages="emailErrors"
@@ -24,11 +24,22 @@
                     class="text-input"
                     @click:append="show1 = !show1"
                 ></v-text-field>
-            <v-btn class="submit-btn" color="indigo" light @click="submit">sign in</v-btn>
+                <v-text-field
+                    v-model="password"
+                    :append-icon="show1 ? 'md-visibility' : 'md-visibility_off'"
+                    :rules="[rules.required, rules.min]"
+                    :type="show1 ? 'text' : 'password'"
+                    name="input-10-1"
+                    label="Repeat password"
+                    hint="At least 8 characters"
+                    class="text-input"
+                    @click:append="show2 = !show2"
+                ></v-text-field>
+            <v-btn class="submit-btn" color="indigo" light @click="submit">sign up</v-btn>
             <v-divider
                 inset
             ></v-divider>
-            <span class="login-form__info">New to our site? <router-link to = '/'>Sign up</router-link></span>
+            <span class="login-form__info">Already have an account?<router-link to = '/login'> Sign in</router-link></span>
 
         </v-form>
 </div>
@@ -56,6 +67,7 @@
 
     data: () => ({
       show1: false,
+      show2: false,
       name: '',
       email: '',
       select: null,
@@ -121,7 +133,7 @@
 <style lang="scss">
 
 .login-form{
-    margin: 10vh auto;
+    margin: 8vh auto;
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -153,6 +165,4 @@
 .login-form__title{
     font-size: 1.5rem;
 }
-
-
 </style>

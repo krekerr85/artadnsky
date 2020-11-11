@@ -6,8 +6,9 @@
     <Header/>
       
     <div class="main-content">
-
-      <router-view/>
+      <transition name="fade" mode="out-in">
+      <router-view></router-view>
+      </transition>
     </div>
      
     <Footer/>
@@ -38,7 +39,7 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 .main-content{
-  width:85vw;
+  width:100vw;
   margin: 5rem auto 0 auto;
   padding: 0;
   flex: 1 1 auto;
@@ -49,6 +50,13 @@ p{
 #inspire{
   display: flex;
   flex-direction: column;
+  
 
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .4s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
