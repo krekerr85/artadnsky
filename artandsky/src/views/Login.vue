@@ -28,7 +28,7 @@
             <v-divider
                 inset
             ></v-divider>
-            <span class="login-form__info">New to our site? <router-link to = '/'>Sign up</router-link></span>
+            <span class="login-form__info">New to our site? <router-link to = '/register'>Sign up</router-link></span>
 
         </v-form>
 </div>
