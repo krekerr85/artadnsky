@@ -15,7 +15,47 @@ export default {
 </script>
 <style>
 
-.page-not-found{
+
+@media screen and (max-width: 600px) {
+  .page-not-found{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.page-not-found__number{
+    font-size: 100px;
+    color: indigo;
+    padding: .4rem;
+}
+.page-not-found__text{
+    font-size: 40px;
+}
+.page-not-found__image{
+    width: 180px;
+}
+}
+@media screen and (min-width:600px) and (max-width:1300px) {
+  .page-not-found{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.page-not-found__number{
+    font-size: 120px;
+    color: indigo;
+    padding: 1rem;
+}
+.page-not-found__text{
+    font-size: 50px;
+}
+.page-not-found__image{
+    width: 180px;
+}
+}
+@media screen and (min-width:1300px) {
+  .page-not-found{
     display:flex;
     justify-content: center;
     align-items: center;
@@ -27,5 +67,7 @@ export default {
 }
 .page-not-found__text{
     font-size: 50px;
+}
+  
 }
 </style>
