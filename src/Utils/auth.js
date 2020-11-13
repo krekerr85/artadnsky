@@ -1,16 +1,15 @@
-const config = require("../config");
 const { User } = require("../resources/User/userModel");
 const jwt = require("jsonwebtoken");
 
 export const newToken = (user) => {
-	return jwt.sign({ id: user.id }, config.secrets.jwt, {
-		expiresIn: config.secrets.jwtExp,
+	return jwt.sign({ id: user.id }, "learneverything", {
+		expiresIn: "100d",
 	});
 };
 
 export const verifyToken = (token) =>
 	new Promise((resolve, reject) => {
-		jwt.verify(token, config.secrets.jwt, (err, payload) => {
+		jwt.verify(token, "learneverything", (err, payload) => {
 			if (err) return reject(err);
 			resolve(payload);
 		});
