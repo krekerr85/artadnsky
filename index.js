@@ -3,7 +3,7 @@ var session = require("cookie-session");
 const cors = require("cors");
 import config from "./src/config";
 import { connect } from "./src/Utils/db";
-// import userRouter from "./src/resources/user/userRouter";
+import userRouter from "./src/resources/User/userRouter";
 import { signup, signin, protect } from "./src/Utils/auth";
 const app = express();
 var expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
