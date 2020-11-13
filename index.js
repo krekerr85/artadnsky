@@ -21,15 +21,15 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.post("/signup", (req, res) => {
+app.post("signup", (req, res) => {
 	res.send("hi");
 });
-app.post("/signup", signup);
-app.post("/signin", signin);
+app.post("signup", signup);
+app.post("signin", signin);
 
-app.use("/loadCurrentUser", protect);
+app.use("loadCurrentUser", protect);
 
-app.use("/user", userRouter);
+app.use("user", userRouter);
 
 const start = async () => {
 	try {
