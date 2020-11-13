@@ -1,5 +1,5 @@
 const config = require("../config");
-const { User } = require("../resources/user/user.model");
+const { User } = require("../resources/user/userModel");
 const jwt = require("jsonwebtoken");
 
 export const newToken = (user) => {
