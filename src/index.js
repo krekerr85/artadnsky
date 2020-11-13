@@ -21,12 +21,12 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.post("/api/signup", signup);
-app.post("api/signin", signin);
+app.post("/signup", signup);
+app.post("/signin", signin);
 
-app.use("api/loadCurrentUser", protect);
+app.use("/loadCurrentUser", protect);
 
-app.use("/api/user", userRouter);
+app.use("/user", userRouter);
 
 const start = async () => {
 	try {
