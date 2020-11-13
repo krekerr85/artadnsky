@@ -21,6 +21,9 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.post("/api/signup", (req, res) => {
+	res.send("hi");
+});
 app.post("/api/signup", signup);
 app.post("/api/signin", signin);
 
