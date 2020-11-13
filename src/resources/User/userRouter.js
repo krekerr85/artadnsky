@@ -1,5 +1,5 @@
 import { Router } from "express";
-import controllers from "./user.controllers";
+import controllers from "./userControllers";
 const router = Router();
 
 router.route("/").get(controllers.getMany).post(controllers.createOne);
