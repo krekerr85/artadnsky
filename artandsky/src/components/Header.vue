@@ -1,42 +1,39 @@
 <template>
-<v-app-bar app light fixed>
-    <v-toolbar-title><router-link to = '/' class="header__link"><v-btn text >
-      Art&Sky
-    </v-btn></router-link></v-toolbar-title>
-    <router-link to = '/docs' class="header__link"><v-btn  rounded>
-      Docs
-    </v-btn></router-link>
+<v-app-bar app dark fixed>
+    <v-toolbar-title><router-link to = '/' class="header__link">
+      <span  class="title__link">Art&Sky</span>
+    </router-link></v-toolbar-title>
+
+    <router-link class='header__link' to = '/docs'>
+      <span  class="link">Docs</span>
+    </router-link>
+
+      <router-link class='header__link' to = '/cabinet' v-if="isLoggedIn">
+      <span  class="link">Cabinet</span>
+    </router-link>
+
+    
     <v-spacer></v-spacer>
     
 
-    <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon>mdi-menu</v-icon>
-          </v-btn>
-        </template>
-            <v-list>
-        <v-list-item
-          v-for="(item, index) in items"
-          :key="index"
-          :to="item.link"
-           link
-        >
-          {{ item.title }}
-        </v-list-item>
-      </v-list>
-      </v-menu>
+    <div class='auth__links' v-if="isLoggedIn">
+      <v-btn @click="logout">Log out</v-btn>
+    </div>
+    <div class='auth__links' v-else>
+      <router-link class='header__link' to = '/login' >
+      <span  class="link">Sign in</span>
+      </router-link>
+      <router-link class='header__link' to = '/register' >
+      <span  class="link">Sign up</span>
+      </router-link>
+    </div>
 </v-app-bar>
         
 
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
     data(){
         return {
@@ -47,8 +44,22 @@ export default {
         link: '/login' },
         { title: 'Sign up',
         link: '/register' },
-    ],
+    ]
         }
+    },
+    computed: {
+      ...mapGetters([
+        'isLoggedIn'
+      ]),
+    },
+    methods: {
+      logout: function () {
+        this.$store.dispatch('logout')
+        .then(() => {
+          this.$router.push('/login')
+        })
+        
+      }
     }
 }
 </script>
@@ -56,5 +67,15 @@ export default {
 <style lang="scss">
 .header__link{
     text-decoration: none;
+}
+.link {
+  padding-left: 10px;
+  color: white;
+  font-size: 18px;
+}
+.title__link{
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
 }
 </style>

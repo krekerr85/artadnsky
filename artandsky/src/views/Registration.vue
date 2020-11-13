@@ -2,40 +2,47 @@
 <div>
 
     
-    <v-form class="login-form" justify-center>
+    <v-form @submit.prevent="handleSubmit" class="login-form" justify-center>
             <span class="login-form__title">Sign up</span>
             <v-text-field
-            v-model="email"
-            :error-messages="emailErrors"
-            label="E-mail"
-            required
-            class="text-input"
-            @input="$v.email.$touch()"
-            @blur="$v.email.$touch()"
-            ></v-text-field>
+    v-model="email"
+    :error-messages="emailErrors"
+    label="Email"
+    class="text-input"
+    required
+    @input="$v.email.$touch()"
+    @blur="$v.email.$touch()"
+    prepend-icon="mdi-mail"
+/>
                 <v-text-field
-                    v-model="password"
-                    :append-icon="show1 ? 'md-visibility' : 'md-visibility_off'"
-                    :rules="[rules.required, rules.min]"
-                    :type="show1 ? 'text' : 'password'"
-                    name="input-10-1"
-                    label="Password"
-                    hint="At least 8 characters"
-                    class="text-input"
-                    @click:append="show1 = !show1"
-                ></v-text-field>
+    v-model="password"
+    :type="showPassword ? 'text' : 'password'"
+    :error-messages="passwordErrors"
+    label="Password"
+    class="text-input"
+    required
+    @input="$v.password.$touch()"
+    @blur="$v.password.$touch()"
+    prepend-icon="mdi-lock"
+    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+    @click:append="showPassword = !showPassword"
+/>
                 <v-text-field
-                    v-model="password"
-                    :append-icon="show1 ? 'md-visibility' : 'md-visibility_off'"
-                    :rules="[rules.required, rules.min]"
-                    :type="show1 ? 'text' : 'password'"
-                    name="input-10-1"
-                    label="Repeat password"
-                    hint="At least 8 characters"
-                    class="text-input"
-                    @click:append="show2 = !show2"
-                ></v-text-field>
-            <v-btn class="submit-btn" color="indigo" light @click="submit">sign up</v-btn>
+    v-model="confirmPassword"
+    :type="showPassword ? 'text' : 'password'"
+    :error-messages="confirmPasswordErrors"
+    label="Password"
+    required
+    class="text-input"
+    @input="$v.confirmPassword.$touch()"
+    @blur="$v.confirmPassword.$touch()"
+    prepend-icon="mdi-lock"
+    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+    @click:append="showPassword = !showPassword"
+/>
+            <span class="errorMsg">{{errorMessage}}</span>
+
+            <v-btn class="submit-btn" color="indigo" light @click="handleSubmit" >sign up</v-btn>
             <v-divider
                 inset
             ></v-divider>
@@ -47,89 +54,77 @@
 </template>
 
 <script>
-  import { validationMixin } from 'vuelidate'
-  import { required, maxLength, email } from 'vuelidate/lib/validators'
+import { validationMixin } from "vuelidate";
+import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 
-  export default {
-    title: 'Login',
-    mixins: [validationMixin],
-
-    validations: {
-      name: { required, maxLength: maxLength(10) },
-      email: { required, email },
-      select: { required },
-      checkbox: {
-        checked (val) {
-          return val
-        }
-      }
+export default {
+  title: 'Sign up',
+  mixins: [validationMixin],
+  validations: {
+    email: { required, email },
+    password: { required, minLength: minLength(6) },
+    confirmPassword: { sameAsPassword: sameAs("password") }
+  },
+  data() {
+    return {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      status: null,
+      isAdmin: null,
+      showPassword: false,
+      errorMessage: ''
+    };
+  },
+  computed: {
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      !this.$v.email.required && errors.push("E-mail is required");
+      return errors;
     },
-
-    data: () => ({
-      show1: false,
-      show2: false,
-      name: '',
-      email: '',
-      select: null,
-      password: '',
-      items: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
-      ],
-      checkbox: false,
-      rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => ('The email and password you entered don\'t match')
-        }
-    }),
-
-    computed: {
-      checkboxErrors () {
-        const errors = []
-        if (!this.$v.checkbox.$dirty) return errors
-        !this.$v.checkbox.checked && errors.push('You must agree to continue!')
-        return errors
-      },
-      selectErrors () {
-        const errors = []
-        if (!this.$v.select.$dirty) return errors
-        !this.$v.select.required && errors.push('Item is required')
-        return errors
-      },
-      nameErrors () {
-        const errors = []
-        if (!this.$v.name.$dirty) return errors
-        !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long')
-        !this.$v.name.required && errors.push('Name is required.')
-        return errors
-      },
-      emailErrors () {
-        const errors = []
-        if (!this.$v.email.$dirty) return errors
-        !this.$v.email.email && errors.push('Must be valid e-mail')
-        !this.$v.email.required && errors.push('E-mail is required')
-        return errors
-      }
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.minLength &&
+        errors.push("Password must be at least 6 characters long");
+      !this.$v.password.required && errors.push("Password is required");
+      return errors;
     },
-
+    confirmPasswordErrors() {
+      const errors = [];
+      if (!this.$v.confirmPassword.$dirty) return errors;
+      !this.$v.confirmPassword.sameAsPassword && errors.push("Password must be same");
+      return errors;
+    }
+    },
     methods: {
-      submit () {
-        this.$v.$touch()
-      },
-      clear () {
-        this.$v.$reset()
-        this.name = ''
-        this.email = ''
-        this.select = null
-        this.checkbox = false
+    async handleSubmit() {
+      this.$v.$touch();
+      if(this.$v.$invalid){
+        console.log(this.$v.$invalid)
+        return
       }
+      this.$store
+        .dispatch("register", {
+          email: this.email,
+          password: this.password
+        })
+        .then(() => {
+          this.$router.push('/cabinet');
+        })
+        .catch(err => {
+          console.log(err);
+          this.errorMessage = 'Email is already taken'
+        });
+    },
+    cancel() {
+      return this.$router.push('/login');
     }
   }
+}
 </script>
-
 <style lang="scss">
 
 .login-form{
@@ -164,5 +159,8 @@
 }
 .login-form__title{
     font-size: 1.5rem;
+}
+.errorMsg{
+  color: red;
 }
 </style>

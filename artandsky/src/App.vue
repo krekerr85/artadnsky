@@ -24,6 +24,16 @@
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 export default {
+  created(){
+    this.$http.interceptors.response.use(undefined, function (err) {
+      return new Promise(function (){
+          if (err.status === 401 && err.config && !err.config.__isRetryRequest){
+            this.$store.dispatch("logout")
+          }
+          throw err;
+    });
+    });
+    },
   name: "App",
   components: {
     Header,

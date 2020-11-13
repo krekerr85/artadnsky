@@ -7,23 +7,28 @@
             <v-text-field
             v-model="email"
             :error-messages="emailErrors"
-            label="E-mail"
-            required
+            label="Email"
             class="text-input"
+            required
             @input="$v.email.$touch()"
             @blur="$v.email.$touch()"
+            prepend-icon="mdi-mail"
             ></v-text-field>
                 <v-text-field
                     v-model="password"
-                    :append-icon="show1 ? 'md-visibility' : 'md-visibility_off'"
-                    :rules="[rules.required, rules.min]"
-                    :type="show1 ? 'text' : 'password'"
-                    name="input-10-1"
+                    type="password"
+                    required
+                    :error-messages="passwordErrors"
                     label="Password"
-                    hint="At least 8 characters"
                     class="text-input"
-                    @click:append="show1 = !show1"
+                    @input="$v.password.$touch()"
+                    @blur="$v.password.$touch()"
+                    prepend-icon="mdi-lock"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPassword = !showPassword"
                 ></v-text-field>
+          <span class='errorMsg'>{{errorMessage}}</span>
+
             <v-btn class="submit-btn" color="indigo" light @click="submit">sign in</v-btn>
             <v-divider
                 inset
@@ -36,85 +41,64 @@
 </template>
 
 <script>
-  import { validationMixin } from 'vuelidate'
-  import { required, maxLength, email } from 'vuelidate/lib/validators'
+import { validationMixin } from "vuelidate";
+import { required, email} from "vuelidate/lib/validators";
 
   export default {
     title: 'Login',
     mixins: [validationMixin],
 
     validations: {
-      name: { required, maxLength: maxLength(10) },
-      email: { required, email },
-      select: { required },
-      checkbox: {
-        checked (val) {
-          return val
-        }
+    email: { required, email },
+    password: { required },
+    },
+  data() {
+      return {
+        email: '',
+        password: '',
+        submitted : false,
+        showPassword: false,
+        errorMessage:''
       }
     },
-
-    data: () => ({
-      show1: false,
-      name: '',
-      email: '',
-      select: null,
-      password: '',
-      items: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4'
-      ],
-      checkbox: false,
-      rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => ('The email and password you entered don\'t match')
-        }
-    }),
-
     computed: {
-      checkboxErrors () {
-        const errors = []
-        if (!this.$v.checkbox.$dirty) return errors
-        !this.$v.checkbox.checked && errors.push('You must agree to continue!')
-        return errors
-      },
-      selectErrors () {
-        const errors = []
-        if (!this.$v.select.$dirty) return errors
-        !this.$v.select.required && errors.push('Item is required')
-        return errors
-      },
-      nameErrors () {
-        const errors = []
-        if (!this.$v.name.$dirty) return errors
-        !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long')
-        !this.$v.name.required && errors.push('Name is required.')
-        return errors
-      },
-      emailErrors () {
-        const errors = []
-        if (!this.$v.email.$dirty) return errors
-        !this.$v.email.email && errors.push('Must be valid e-mail')
-        !this.$v.email.required && errors.push('E-mail is required')
-        return errors
-      }
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      !this.$v.email.required && errors.push("E-mail is required");
+      return errors;
     },
-
-    methods: {
-      submit () {
-        this.$v.$touch()
-      },
-      clear () {
-        this.$v.$reset()
-        this.name = ''
-        this.email = ''
-        this.select = null
-        this.checkbox = false
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.required && errors.push("Password is required");
+      return errors;
+    },
+    },
+  methods: {
+    async submit() {
+      this.$v.$touch();
+      if(this.$v.$invalid){
+        return
       }
+      this.$store
+        .dispatch("login", {
+          email: this.email,
+          password: this.password
+        })
+        .then(() => {
+          this.$router.push('/cabinet');
+        })
+        .catch(err => {
+          console.log(err);
+          this.errorMessage = 'Email or password is incorrect'
+        });
+    },
+    cancel() {
+      return this.$router.push('/login');
     }
+  }
   }
 </script>
 
@@ -140,20 +124,26 @@
 .text-input{
     width:100%;
 }
+.login-form__title{
+    font-size: 1rem;
+}
   
 }
 @media screen and (min-width:800px) and (max-width:2000px) {
   .login-form{
-    width:40%;
+    width:60%;
 }
   .text-input{
       width: 80%;
   }
-  
-}
 .login-form__title{
     font-size: 1.5rem;
 }
+  
+}
 
+.errorMsg{
+  color: red;
+}
 
 </style>
