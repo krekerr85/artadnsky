@@ -74,6 +74,8 @@ router.beforeEach((to, from, next) => {
 			return;
 		}
 		next("/cabinet");
+	} else {
+		next();
 	}
 });
 

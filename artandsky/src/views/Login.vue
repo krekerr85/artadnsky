@@ -131,7 +131,7 @@ import { required, email} from "vuelidate/lib/validators";
 }
 @media screen and (min-width:800px) and (max-width:2000px) {
   .login-form{
-    width:60%;
+    width:40%;
 }
   .text-input{
       width: 80%;
