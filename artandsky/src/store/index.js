@@ -34,7 +34,7 @@ export default new Vuex.Store({
 			return new Promise((resolve, reject) => {
 				commit("auth_request");
 				axios({
-					url: "api/signin",
+					url: "/api/signin",
 					data: user,
 					method: "POST",
 				})
@@ -57,7 +57,7 @@ export default new Vuex.Store({
 			return new Promise((resolve, reject) => {
 				commit("auth_request");
 				axios({
-					url: "api/signup",
+					url: "/api/signup",
 					data: user,
 					method: "POST",
 				})
@@ -89,7 +89,7 @@ export default new Vuex.Store({
 			if (!state.token) {
 				return;
 			}
-			const req = await axios.post("api/loadCurrentUser/protect");
+			const req = await axios.post("/api/loadCurrentUser/protect");
 			commit("setCurrentUser", req);
 		},
 	},

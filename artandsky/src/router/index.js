@@ -15,11 +15,17 @@ const routes = [
 		path: "/login",
 		name: "Login",
 		component: () => import("../views/Login.vue"),
+		meta: {
+			guest: true,
+		},
 	},
 	{
 		path: "/register",
 		name: "Register",
 		component: () => import("../views/Registration.vue"),
+		meta: {
+			guest: true,
+		},
 	},
 	{
 		path: "/docs",
@@ -39,6 +45,15 @@ const routes = [
 			requiresAuth: true,
 		},
 	},
+	// {
+	// 	path: "/admin",
+	// 	name: "admin",
+	// 	component: Admin,
+	// 	meta: {
+	// 		requiresAuth: true,
+	// 		is_admin: true,
+	// 	},
+	// },
 ];
 
 const router = new VueRouter({
@@ -53,8 +68,13 @@ router.beforeEach((to, from, next) => {
 			return;
 		}
 		next("/login");
-	} else {
-		next();
+	} else if (to.matched.some((record) => record.meta.guest)) {
+		if (!store.getters.isLoggedIn) {
+			next();
+			return;
+		}
+		next("/cabinet");
 	}
 });
+
 export default router;

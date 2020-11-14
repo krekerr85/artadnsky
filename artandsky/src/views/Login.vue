@@ -16,7 +16,7 @@
             ></v-text-field>
                 <v-text-field
                     v-model="password"
-                    type="password"
+                    :type = "showPassword ? 'text' : 'password'"
                     required
                     :error-messages="passwordErrors"
                     label="Password"
@@ -29,7 +29,7 @@
                 ></v-text-field>
           <span class='errorMsg'>{{errorMessage}}</span>
 
-            <v-btn class="submit-btn" color="indigo" light @click="submit">sign in</v-btn>
+            <v-btn class="submit-btn" dark @click="submit">sign in</v-btn>
             <v-divider
                 inset
             ></v-divider>

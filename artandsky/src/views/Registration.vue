@@ -16,7 +16,7 @@
 />
                 <v-text-field
     v-model="password"
-    :type="showPassword ? 'text' : 'password'"
+    type='password'
     :error-messages="passwordErrors"
     label="Password"
     class="text-input"
@@ -24,25 +24,21 @@
     @input="$v.password.$touch()"
     @blur="$v.password.$touch()"
     prepend-icon="mdi-lock"
-    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-    @click:append="showPassword = !showPassword"
 />
                 <v-text-field
     v-model="confirmPassword"
-    :type="showPassword ? 'text' : 'password'"
+    type='password'
     :error-messages="confirmPasswordErrors"
-    label="Password"
+    label="Repeat password"
     required
     class="text-input"
     @input="$v.confirmPassword.$touch()"
     @blur="$v.confirmPassword.$touch()"
     prepend-icon="mdi-lock"
-    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-    @click:append="showPassword = !showPassword"
 />
             <span class="errorMsg">{{errorMessage}}</span>
 
-            <v-btn class="submit-btn" color="indigo" light @click="handleSubmit" >sign up</v-btn>
+            <v-btn class="submit-btn" dark @click="handleSubmit" >sign up</v-btn>
             <v-divider
                 inset
             ></v-divider>
@@ -72,7 +68,6 @@ export default {
       confirmPassword: "",
       status: null,
       isAdmin: null,
-      showPassword: false,
       errorMessage: ''
     };
   },
