@@ -45,7 +45,11 @@ export const signin = async (req, res) => {
 			return res.status(401).send({ message: "Password is incorrect" });
 		}
 		const token = newToken(user);
-		return res.status(201).send({ token: token, user: req.body.email });
+		return res.status(201).send({
+			token: token,
+			email: user.email,
+			isAdmin: user.isAdmin,
+		});
 	} catch (e) {
 		console.error(e);
 		return res.status(400).send({ message: "Not auth" });
@@ -69,7 +73,31 @@ export const protect = async (req, res, next) => {
 			.lean()
 			.exec();
 		req.user = user;
-		res.send(user);
+		next();
+	} catch (e) {
+		console.error(e);
+		return res.status(401).end();
+	}
+};
+export const getUserInfo = async (req, res) => {
+	if (!req.headers.authorization) {
+		return res.status(401).end();
+	}
+	let token = req.headers.authorization;
+	if (!token) {
+		res.status(401).end();
+	}
+	try {
+		const payload = await verifyToken(token);
+		const user = await User.findById(payload.id)
+			.select("-password")
+			.lean()
+			.exec();
+		return res.status(201).send({
+			token: token,
+			email: user.email,
+			isAdmin: user.isAdmin,
+		});
 	} catch (e) {
 		console.error(e);
 		return res.status(401).end();

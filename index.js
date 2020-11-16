@@ -3,8 +3,9 @@ var session = require("cookie-session");
 const cors = require("cors");
 import config from "./src/config";
 import { connect } from "./src/Utils/db";
-import userRouter from "./src/resources/User/userRouter";
-import { signup, signin, protect } from "./src/Utils/auth";
+// import userRouter from "./src/resources/User/userRouter";
+import postRouter from "./src/resources/Post/postRouter";
+import { signup, signin, protect, getUserInfo } from "./src/Utils/auth";
 const app = express();
 var expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 app.use(
@@ -18,15 +19,17 @@ app.use(
 		},
 	})
 );
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.post("/api/signup", signup);
 app.post("/api/signin", signin);
-
-app.use("/api/loadCurrentUser", protect);
-
-app.use("/api/user", userRouter);
+app.use("/api", protect);
+app.use("/api/post", postRouter);
+// app.use("/api/user", userRouter);
+app.use("/api/user", getUserInfo);
 
 const start = async () => {
 	try {

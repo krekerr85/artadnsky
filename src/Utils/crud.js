@@ -1,8 +1,8 @@
 export const getOne = (model) => async (req, res) => {
 	const id = req.params.id;
 	const userId = req.user._id;
-
-	const doc = await model.findOne({ _id: id, createdBy: userId }).exec();
+	console.log("getone");
+	const doc = await model.findOne({ _id: id }).exec();
 	if (!doc) {
 		return res.status(404).end();
 	}
@@ -10,16 +10,19 @@ export const getOne = (model) => async (req, res) => {
 };
 
 export const getMany = (model) => async (req, res) => {
-	const docs = await model.find({ createdBy: req.user._id }).exec();
+	console.log("getmany");
+	const docs = await model.find({}).exec();
 	res.status(200).json({ data: docs });
 };
 
 export const createOne = (model) => async (req, res) => {
+	console.log("createone");
 	const doc = await model.create({ ...req.body, createdBy: req.user._id });
 	res.status(200).json({ data: doc });
 };
 
 export const updateOne = (model) => async (req, res) => {
+	console.log("updateone");
 	const doc = await model.findOneAndUpdate(
 		{
 			_id: req.params.id,
@@ -35,10 +38,10 @@ export const updateOne = (model) => async (req, res) => {
 };
 
 export const removeOne = (model) => async (req, res) => {
+	console.log(req.params.id);
 	const doc = await model
 		.findOneAndRemove({
 			_id: req.params.id,
-			createdBy: req.user._id,
 		})
 		.exec();
 	if (!doc) {

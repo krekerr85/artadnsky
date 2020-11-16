@@ -23,6 +23,7 @@
 <script>
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+import { mapGetters} from "vuex";
 export default {
   created(){
     this.$http.interceptors.response.use(undefined, function (err) {
@@ -32,18 +33,24 @@ export default {
           }
           throw err;
     });
-    });
-    },
+    })
+  },
   name: "App",
   components: {
     Header,
     Footer
   },
-
   data: () => ({
     //
-  })
-};
+  }),
+computed: {
+        ...mapGetters([
+            'isLoggedIn'
+        ]),
+        currentUser(){
+            return this.$store.getters.currentUser
+        },
+    },};
 </script>
 
 <style lang="scss">

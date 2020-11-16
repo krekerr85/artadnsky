@@ -1,6 +1,7 @@
 <template>
     <div v-if="!busy">
         <h1>Hi {{currentUser}}</h1>
+        <router-link to="/admin" v-if="isAdmin">Admin panel</router-link>
     </div>
 </template>
 
@@ -20,19 +21,14 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'isLoggedIn'
-        ]),
-        currentUser(){
-            return this.$store.state.user.data.email
-        },
+            'isLoggedIn','currentUser', 'isAdmin'
+        ])
     },
     methods: {
         async loadCurrentUser(){
-            if (this.$store.state.currentUser == null){
-                this.busy = true
-                await this.$store.dispatch('loadCurrentUser')
+                const user = await this.$store.dispatch('loadCurrentUser')
                 this.busy = false
-            }
+                console.log(user)
             
 
         }

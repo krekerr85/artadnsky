@@ -35,29 +35,16 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-    data(){
-        return {
-            items: [
-      { title: 'Home',
-        link: '/' },
-      { title: 'Sign in',
-        link: '/login' },
-        { title: 'Sign up',
-        link: '/register' },
-    ]
-        }
-    },
     computed: {
       ...mapGetters([
         'isLoggedIn'
       ]),
     },
     methods: {
-      logout: function () {
-        this.$store.dispatch('logout')
-        .then(() => {
-          this.$router.push('/login')
-        })
+      logout: async function () {
+        await this.$store.dispatch('logout')
+
+        this.$router.push('/login')
         
       }
     }

@@ -45,15 +45,15 @@ const routes = [
 			requiresAuth: true,
 		},
 	},
-	// {
-	// 	path: "/admin",
-	// 	name: "admin",
-	// 	component: Admin,
-	// 	meta: {
-	// 		requiresAuth: true,
-	// 		is_admin: true,
-	// 	},
-	// },
+	{
+		path: "/admin",
+		name: "admin",
+		component: () => import("../views/Admin.vue"),
+		meta: {
+			requiresAuth: true,
+			is_admin: true,
+		},
+	},
 ];
 
 const router = new VueRouter({
@@ -61,8 +61,18 @@ const router = new VueRouter({
 	base: process.env.BASE_URL,
 	routes,
 });
-router.beforeEach((to, from, next) => {
-	if (to.matched.some((record) => record.meta.requiresAuth)) {
+router.beforeEach(async (to, from, next) => {
+	if (to.matched.some((record) => record.meta.is_admin)) {
+		const response = await store.dispatch("loadCurrentUser");
+		console.log(response);
+		if (response.isAdmin) {
+			next();
+			return;
+		} else if (store.getters.isLoggedIn) {
+			next("/cabinet");
+		}
+		next("/login");
+	} else if (to.matched.some((record) => record.meta.requiresAuth)) {
 		if (store.getters.isLoggedIn) {
 			next();
 			return;

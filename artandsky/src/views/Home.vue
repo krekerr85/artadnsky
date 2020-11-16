@@ -1,39 +1,72 @@
 <template>
-  <div>
-      <h1>An Introduction to JavaScript</h1>
-      <div class="js-image"><img class="js-img" src="../assets/java-script.jpg"/></div>
-<p>Let’s see what’s so special about JavaScript, what we can achieve with it, and what other technologies play well with it.</p>
-
-<h2>What is JavaScript?</h2>
-<p>JavaScript was initially created to “make web pages alive”.</p>
-
-<p>The programs in this language are called scripts. They can be written right in a web page’s HTML and run automatically as the page loads.</p>
-
-<p>Scripts are provided and executed as plain text. They don’t need special preparation or compilation to run.</p>
-
-<p>In this aspect, JavaScript is very different from another language called Java.</p>
-<h2>Why is it called JavaScript?</h2>
-<p>When JavaScript was created, it initially had another name: “LiveScript”. But Java was very popular at that time, so it was decided that positioning a new language as a “younger brother” of Java would help.</p>
-
-<p>But as it evolved, JavaScript became a fully independent language with its own specification called ECMAScript, and now it has no relation to Java at all.</p>
+  <div v-if="!busy">
+  <div class="posts" v-for="post in posts" :key="post.text">
+    
+    <span class="posts__title">{{post.title}}</span><br/>
+    <span  class="posts__author">{{post.author}}</span> <span class="post__date">{{getDate(post.createdAt)}}</span>
+    <hr/>
+    <div class="posts__text">{{post.text}}</div><br/>
+    <v-btn class="posts__btn" v-if="isAdmin" @click="deletePost(post._id)">Удалить</v-btn>
+  </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
+import { mapGetters} from "vuex";
+import moment from 'moment'
+import axios from "axios";
 export default {
   title: 'Home',
+  async created() {
+    this.busy = true
+    await this.loadCurrentUser()
+    await this.loadPosts()
+    this.busy = false
+
+  },
   data() {
     return {
+      
+      busy: true,
+      posts: ''
 
     };
   },
+  computed: {
+    ...mapGetters([
+            'isLoggedIn'
+        ]),
+        currentUser(){
+            return this.$store.getters.currentUser
+        },
+        isAdmin(){
+            return this.$store.getters.isAdmin
+        },
+        
+  },
   methods: {
+    async loadPosts(){
+      
+    const response = await this.$store.dispatch('fetchServer',['loadPosts'])
+    this.posts = response.data.data
+    console.log(this.posts)
+    },
+    async loadCurrentUser(){
+        await this.$store.dispatch('loadCurrentUser')
+    },
+    async deletePost(id){
+      await axios.delete(`/api/post/${id}`);
+      this.loadPosts()
+    },
+    getDate(date){
+      const m = moment(date)
+      return m.fromNow()
+    }
   }
 };
 </script>
 
-<style >
+<style lang='scss'>
 .js-image{
     float:left;
     margin: 10px 10px 7px 0;
@@ -48,6 +81,22 @@ export default {
   .js-img{
     width: 250px;
 }
-  
+.posts{
+
+  &__text{
+    font-size: 24px;
+    padding: 5px;
+    margin: 5px;
+  }
+  &__title{
+    font-size: 30px;
+  }
+  &__author{
+    text-decoration: underline;
+  }
+  &__btn{
+    margin: 0 auto;
+  }
+}
 }
 </style>

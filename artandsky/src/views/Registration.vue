@@ -101,13 +101,13 @@ export default {
         console.log(this.$v.$invalid)
         return
       }
-      this.$store
-        .dispatch("register", {
+      await this.$store
+        .dispatch("fetchServer",['register', {
           email: this.email,
           password: this.password
-        })
+        }])
         .then(() => {
-          this.$router.push('/cabinet');
+          this.$router.push('/login');
         })
         .catch(err => {
           console.log(err);

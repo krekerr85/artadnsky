@@ -1,6 +1,8 @@
 import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
+import webApi from "../api/dataApi";
+import { SERVER_ERROR_TYPE } from "../api/commonApi";
 
 Vue.use(Vuex);
 
@@ -8,75 +10,25 @@ export default new Vuex.Store({
 	state: {
 		status: "",
 		token: localStorage.getItem("token") || "",
-		user: "",
+		posts: [],
+		isLoggedIn: undefined,
+		currentUser: null,
+		isAdmin: false,
 	},
 	mutations: {
-		auth_request(state) {
-			state.status = "loading";
-		},
-		auth_success(state, token, user) {
-			state.status = "success";
-			state.token = token;
-			state.user = user;
-		},
-		auth_error(state) {
-			state.status = "error";
-		},
+		login: (state) => (state.isLoggedIn = true),
 		logout(state) {
-			(state.status = ""), (state.token = "");
+			(state.isAdmin = false),
+				(state.token = ""),
+				(state.currentUser = null),
+				(state.isLoggedIn = undefined);
 		},
-		setCurrentUser(state, user) {
-			state.user = user;
-		},
+		setCurrentUser: (state, user) => (state.currentUser = user),
+		setPosts: (state, posts) => (state.posts = posts),
+		setRole: (state, isAdmin) => (state.isAdmin = isAdmin),
+		setToken: (state, token) => (state.token = token),
 	},
 	actions: {
-		login({ commit }, user) {
-			return new Promise((resolve, reject) => {
-				commit("auth_request");
-				axios({
-					url: "/api/signin",
-					data: user,
-					method: "POST",
-				})
-					.then((resp) => {
-						const token = resp.data.token;
-						const user = resp.data.user;
-						localStorage.setItem("token", token);
-						axios.defaults.headers.common["Authorization"] = token;
-						commit("auth_success", token, user);
-						resolve(resp);
-					})
-					.catch((err) => {
-						commit("auth_error");
-						localStorage.removeItem("token");
-						reject(err);
-					});
-			});
-		},
-		register({ commit }, user) {
-			return new Promise((resolve, reject) => {
-				commit("auth_request");
-				axios({
-					url: "/api/signup",
-					data: user,
-					method: "POST",
-				})
-					.then((resp) => {
-						const token = resp.data.token;
-						const user = resp.data.user;
-						localStorage.setItem("token", token);
-
-						axios.defaults.headers.common["Authorization"] = token;
-						commit("auth_success", token, user);
-						resolve(resp);
-					})
-					.catch((err) => {
-						commit("auth_error", err);
-						localStorage.removeItem("token");
-						reject(err);
-					});
-			});
-		},
 		logout({ commit }) {
 			return new Promise((resolve) => {
 				commit("logout");
@@ -85,17 +37,67 @@ export default new Vuex.Store({
 				resolve();
 			});
 		},
-		async loadCurrentUser({ commit, state }) {
-			if (!state.token) {
-				return;
+		async loadCurrentUser({ commit }) {
+			try {
+				const response = await webApi["getUserInfo"]();
+				const token = response.data.token;
+				const user = response.data.email;
+				const isAdmin = response.data.isAdmin;
+				commit("login");
+				commit("setCurrentUser", user);
+				commit("setRole", isAdmin);
+				commit("setToken", token);
+				return response.data;
+			} catch (error) {
+				if (error.type === SERVER_ERROR_TYPE) {
+					commit("logout");
+					commit("setCurrentUser", null);
+				}
+				if (error.status === 404 || error.status === 400) {
+					commit("logout");
+					commit("setCurrentUser", null);
+				}
+				console.log(error);
+				throw error;
 			}
-			const req = await axios.post("/api/loadCurrentUser/protect");
-			commit("setCurrentUser", req);
+		},
+		login: async ({ dispatch, commit }, data) => {
+			const response = await dispatch("fetchServer", ["login", data]);
+			const token = response.data.token;
+			const user = response.data.email;
+			const isAdmin = response.data.isAdmin;
+			localStorage.setItem("token", token);
+			axios.defaults.headers.common["Authorization"] = token;
+			console.log(user, isAdmin);
+			commit("login");
+			commit("setCurrentUser", user);
+			commit("setRole", isAdmin);
+			commit("setToken", token);
+			return user;
+		},
+		fetchServer: async (state, [serverAction, ...data]) => {
+			const { commit } = state;
+			// ходим на сервер через стор, чтобы централизованно обрабатывать ошибки
+			try {
+				return await webApi[serverAction](...data);
+			} catch (error) {
+				if (error.type === SERVER_ERROR_TYPE) {
+					if (error.status === 401) {
+						commit("logout");
+						commit("setCurrentUser", null);
+					}
+					if (error.status === 404 || error.status === 400) commit("notFound");
+				}
+				console.log(error);
+				throw error;
+			}
 		},
 	},
 	modules: {},
 	getters: {
 		isLoggedIn: (state) => !!state.token,
-		authStatus: (state) => state.status,
+		currentUser: (state) => state.currentUser,
+		token: (state) => state.token,
+		isAdmin: (state) => state.isAdmin,
 	},
 });

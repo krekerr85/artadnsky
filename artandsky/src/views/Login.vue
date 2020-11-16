@@ -82,18 +82,17 @@ import { required, email} from "vuelidate/lib/validators";
       if(this.$v.$invalid){
         return
       }
-      this.$store
-        .dispatch("login", {
-          email: this.email,
-          password: this.password
-        })
-        .then(() => {
-          this.$router.push('/cabinet');
-        })
-        .catch(err => {
-          console.log(err);
-          this.errorMessage = 'Email or password is incorrect'
-        });
+      try {
+      const user = await this.$store.dispatch('login', {email: this.email, password: this.password});
+      if (user){
+        this.$router.push('/cabinet')
+      } 
+      else {
+        this.$router.push('/login')
+      }
+      }catch(e){
+        console.log(e)
+      }
     },
     cancel() {
       return this.$router.push('/login');
