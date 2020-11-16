@@ -67,9 +67,9 @@ export default {
         textErrors() {
         const errors = [];
         if (!this.$v.postText.$dirty) return errors;
-        !this.$v.postTex.minLength &&
+        !this.$v.postText.minLength &&
             errors.push("Text must be at least 10 characters long");
-        !this.$v.postTex.required && errors.push("Text is required");
+        !this.$v.postText.required && errors.push("Text is required");
         return errors;
     },
     },
